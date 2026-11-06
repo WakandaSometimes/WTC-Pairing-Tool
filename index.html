@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WTC Pairing Assistant</title>
+<style>
+  :root{
+    --bg:#f4f5f8; --card:#fff; --ink:#1d2433; --muted:#667085; --line:#dfe3ea;
+    --accent:#4c3fd1; --accent-soft:#ecebfb; --good:#1f9d55; --bad:#d64545; --warn:#e0a21b;
+    --r0:#b8bec9; --r1:#d64545; --r2:#ee8a3c; --r3:#e3c33d; --r4:#8cc152; --r5:#2e9e4f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#14171f; --card:#1e232e; --ink:#eef0f5; --muted:#9aa3b5; --line:#2e3545; --accent:#8e84ff; --accent-soft:#2a2850; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.35}
+  header{background:var(--accent);color:#fff;padding:10px 14px}
+  header h1{margin:0;font-size:1.1rem}
+  header .sub{font-size:.78rem;opacity:.9;margin-top:2px}
+  nav{display:flex;gap:4px;padding:8px 10px 0;max-width:980px;margin:0 auto}
+  nav button{flex:1;padding:10px 6px;border:0;border-radius:10px 10px 0 0;background:transparent;color:var(--muted);font-weight:600;font-size:.95rem;cursor:pointer}
+  nav button.on{background:var(--card);color:var(--accent)}
+  main{max-width:980px;margin:0 auto;padding:0 10px 40px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+  .card h2{margin:0 0 6px;font-size:1.05rem}
+  .card h3{margin:0 0 8px;font-size:.95rem}
+  .muted{color:var(--muted);font-size:.85rem}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  select,input[type=text],input[type=number]{font:inherit;padding:9px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);max-width:100%}
+  input[type=text]{width:100%}
+  button.btn{font:inherit;font-weight:600;padding:10px 14px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+  button.btn.ghost{background:transparent;color:var(--accent)}
+  button.btn:disabled{opacity:.4;cursor:not-allowed}
+  .seg{display:flex;gap:8px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:130px;padding:12px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+  .seg button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+  .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .opt{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;width:100%;padding:11px 12px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+  .opt:hover{border-color:var(--accent)}
+  .opt.best{border-color:var(--good)}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .opt .nm{font-weight:600}
+  .opt .sub{font-size:.8rem;color:var(--muted);margin-top:2px}
+  .tag{display:inline-block;font-size:.68rem;padding:1px 6px;border-radius:99px;background:var(--accent-soft);color:var(--accent);margin:2px 3px 0 0}
+  .badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--good);color:#fff;margin-left:6px;vertical-align:middle}
+  .outlook{text-align:right;white-space:nowrap}
+  .outlook b{font-size:1.15rem}
+  .outlook small{display:block;color:var(--muted);font-size:.72rem}
+  .rt{display:inline-block;min-width:22px;text-align:center;border-radius:6px;padding:1px 5px;font-weight:700;color:#fff;font-size:.8rem}
+  .r0{background:var(--r0)}.r1{background:var(--r1)}.r2{background:var(--r2)}.r3{background:var(--r3);color:#222}.r4{background:var(--r4);color:#222}.r5{background:var(--r5)}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+  th{font-size:.75rem;color:var(--muted);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
+  .pl{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-top:6px;font-size:.88rem}
+  .pl.paired{opacity:.55}
+  .pl.table{border-color:var(--warn);background:rgba(224,162,27,.12)}
+  .pl .st{font-size:.75rem;color:var(--muted);text-align:right}
+  .bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0 4px}
+  .bar>i{display:block;height:100%;background:var(--good)}
+  .banner{padding:9px 12px;border-radius:10px;font-size:.85rem;margin-top:10px}
+  .banner.warn{background:rgba(224,162,27,.15);border:1px solid var(--warn)}
+  .banner.err{background:rgba(214,69,69,.12);border:1px solid var(--bad)}
+  .banner.ok{background:rgba(31,157,85,.12);border:1px solid var(--good)}
+  .scroll{overflow-x:auto}
+  .rtab td,.rtab th{min-width:86px}
+  .rtab td:first-child,.rtab th:first-child{min-width:110px;font-weight:600}
+  .rtab select{width:100%;padding:7px 4px}
+  .rtab td.local select{border-color:var(--accent);background:var(--accent-soft)}
+  .rtab .aff{font-weight:400}
+  label.chk{display:flex;gap:10px;align-items:center}
+  label.chk input{width:20px;height:20px}
+  details summary{cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <h1>WTC Pairing Assistant</h1>
+  <div class="sub" id="status">Loading…</div>
+</header>
+<nav id="nav"></nav>
+<main id="app"></main>
+
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
