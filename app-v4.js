@@ -40,8 +40,8 @@
   const ratingTag = p => {
     if (!p || p.rating === undefined) return '';
     return p.rating === null
-      ? '<span class="elo na" title="No rating available for this player">no rating</span>'
-      : `<span class="elo" title="Player rating (from your sheet)">Rating ${p.rating}</span>`;
+      ? ' <span class="elo na" title="No rating available for this player">no rating</span>'
+      : ` <span class="elo" title="Player rating (from your sheet)">Rating ${p.rating}</span>`;
   };
 
   // ---------- app state ----------
