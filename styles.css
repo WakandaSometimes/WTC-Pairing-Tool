@@ -90,3 +90,8 @@ details summary{cursor:pointer;font-weight:600}
 #modal .mbar button{font:inherit;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#fff;cursor:pointer}
 #modal .mbody{flex:1;overflow:auto;padding:0 10px 14px;-webkit-overflow-scrolling:touch}
 #modal .mbody .cc{cursor:default;margin:0 auto;max-width:none}
+/* ---- player rating badge ---- */
+.elo{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;background:rgba(224,162,27,.18);color:var(--ink);border:1px solid var(--warn);margin:0 0 0 6px;vertical-align:middle;white-space:nowrap}
+.elo.na{background:transparent;color:var(--muted);border-color:var(--line);font-weight:500}
+.rtab .aff .elo{margin:0 3px 2px 0}
+#modal .mbar .elo{color:#fff}
